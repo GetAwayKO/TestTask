@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <clocale>
 #include <string>
 #include <regex>
@@ -18,28 +18,31 @@ void separator(int);
 int main()
 {
     setlocale(LC_ALL, "russian");
-    
+
     separator(1);
     string text;
+//    ! Будет ли в данном случае копироваться строка в функцию deleteSpaces()? В каком случае будет копироваться?
     text = deleteSpaces("  Lorem   ipsum  dolor      sit  amet,    consectetuer adipiscing elit.       Maecenas porttitor congue   massa. Fusce posuere, magna sed  pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis     urna.   ");
     cout << addEllipsis(text,40)<<endl;
-    
+
     separator(2);
     cout << isRight("((x * y) + (2 * (x + y))) * (y + 3)")<<endl;
     cout << isRight("((((x * y) + (2 * (x - y)))")<<endl;
-    
+
     separator(3);
     vector<vector<int>> matrix = {{1,0,3,5},
                                 {3,2,4,3},
                                 {0,1,-1,4} };
+//    ! А если множество будет множество селовых точек в матрице?
     cout << "Седловая точка: " << findSaddlePoint(matrix) << endl;
 }
 
 //Задание1
-
+//! Как передаются аргументы в C/C++? В данном случае надо передавать аргумент по константной ссылке
 string deleteSpaces(string text)
 {
     //Замена множественных пробелов на единичный
+//	! Почему выбрана такая запись регулярного выражения?
     string newText=regex_replace(text,regex("[[:s:]]{2,}")," ");
     //Обрезаем начало и конец, если присутсвуют пробелы
     newText.erase(0, newText.find_first_not_of(" "));
@@ -49,7 +52,10 @@ string deleteSpaces(string text)
 
 string addEllipsis(string text,int m)
 {
-    //Возврат подстроки не более m символов 
+    //Возврат подстроки не более m символов
+//	! Может возникнуть переполнение int. Нужно использовать std::string::size_type
+//	! Зачем использовать else, если в блоке, который выполнится при истинности условия, написан return?
+//	! Записать, используя тернарный оператор
     if (text.size() > m)
         return text.substr(0,m) + "...";
     else
@@ -57,7 +63,7 @@ string addEllipsis(string text,int m)
 }
 
 //Задание 2
-
+//! Название функции, мягко говоря, не очень информативное
 bool isRight(string text)
 {
     stack <char> brackets;
@@ -79,6 +85,7 @@ bool isRight(string text)
             brackets.push('(');
         }
     }
+//    ! Записать по-человечески
     if (brackets.empty())
         return true;
     else
@@ -97,19 +104,22 @@ int findSaddlePoint(vector<vector<int>> matrix)
         return saddlePoint = minMax;
     else
         cout << "Седловой точки нет." << endl;
-    return NAN;
+//    ! Что такое NAN? У меня компилятор не понимает (gcc version 12.2.0)
+    return 0;
 }
 
 //Поиск минимакса
 int minMaxElement(vector<vector<int>>matrix)
 {
-    vector<int> results; 
+    vector<int> results;
+//    ! Зачем выставлять переменную там, где она не нужна?
     int max;
     for (size_t i = 0; i < matrix[0].size(); i++)
     {
         max = matrix[0][i];
         for (size_t j = 0; j < matrix.size(); j++)
         {
+//        	! Для поиска максимума или минимума есть стандартные функции
             if (matrix[j][i] > max)
             {
                 max = matrix[j][i];
@@ -117,6 +127,7 @@ int minMaxElement(vector<vector<int>>matrix)
         }
         results.push_back(max);
     }
+//    ! Для поиска максимума или минимума в массиве есть стандартные функции
     int minMax = results[0];
     for (size_t i = 0; i < results.size(); i++)
     {
@@ -159,6 +170,7 @@ int maxMinElement(vector<vector<int>>matrix)
 void separator(int taskNum)
 {
     cout << endl << endl;
+//    ! Как-то надо бы без дублирования кода
     for (size_t i = 0; i < 20; i++)
     {
         cout << "*";
