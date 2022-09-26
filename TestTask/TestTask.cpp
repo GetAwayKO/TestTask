@@ -7,188 +7,150 @@
 
 using namespace std;
 
-string deleteSpaces(string);
-string addEllipsis(string, int);
-bool isRight(string);
-int findSaddlePoint(vector<vector<int>>);
-int minMaxElement(vector<vector<int>>);
-int maxMinElement(vector<vector<int>>);
+string deleteSpaces(const string&);
+string addEllipsis(string, size_t);
+bool isRightBracketSequence(const string&);
+int findSaddlePoint(const vector<vector<int>>&);
+int minMaxElement(const vector<vector<int>>&);
+int maxMinElement(const vector<vector<int>>&);
 void separator(int);
 
 int main()
 {
-    setlocale(LC_ALL, "russian");
+	setlocale(LC_ALL, "russian");
+	separator(1);
+	string text;
+	//    ! Будет ли в данном случае копироваться строка в функцию deleteSpaces()? В каком случае будет копироваться?
+		// Строка будет скопирована, потому что передается значение. Если передать по ссылке, строка не будет копироваться.
+	text = deleteSpaces("  Lorem   ipsum  dolor      sit  amet,    consectetuer adipiscing elit.       Maecenas porttitor congue   massa. Fusce posuere, magna sed  pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis     urna.   ");
+	cout << addEllipsis(text, 40) << endl;
 
-    separator(1);
-    string text;
-//    ! Р‘СѓРґРµС‚ Р»Рё РІ РґР°РЅРЅРѕРј СЃР»СѓС‡Р°Рµ РєРѕРїРёСЂРѕРІР°С‚СЊСЃСЏ СЃС‚СЂРѕРєР° РІ С„СѓРЅРєС†РёСЋ deleteSpaces()? Р’ РєР°РєРѕРј СЃР»СѓС‡Р°Рµ Р±СѓРґРµС‚ РєРѕРїРёСЂРѕРІР°С‚СЊСЃСЏ?
-    text = deleteSpaces("  Lorem   ipsum  dolor      sit  amet,    consectetuer adipiscing elit.       Maecenas porttitor congue   massa. Fusce posuere, magna sed  pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis     urna.   ");
-    cout << addEllipsis(text,40)<<endl;
+	separator(2);
+	cout << isRightBracketSequence("((x * y) + (2 * (x + y))) * (y + 3)") << endl;
+	cout << isRightBracketSequence("((((x * y) + (2 * (x - y)))") << endl;
 
-    separator(2);
-    cout << isRight("((x * y) + (2 * (x + y))) * (y + 3)")<<endl;
-    cout << isRight("((((x * y) + (2 * (x - y)))")<<endl;
-
-    separator(3);
-    vector<vector<int>> matrix = {{1,0,3,5},
-                                {3,2,4,3},
-                                {0,1,-1,4} };
-//    ! Рђ РµСЃР»Рё РјРЅРѕР¶РµСЃС‚РІРѕ Р±СѓРґРµС‚ РјРЅРѕР¶РµСЃС‚РІРѕ СЃРµР»РѕРІС‹С… С‚РѕС‡РµРє РІ РјР°С‚СЂРёС†Рµ?
-    cout << "РЎРµРґР»РѕРІР°СЏ С‚РѕС‡РєР°: " << findSaddlePoint(matrix) << endl;
+	separator(3);
+	vector<vector<int>> matrix = { {8,-2,9,-3},
+								{6,5,6,8},
+								{-2,4,-9,5} };
+	//    ! А если множество будет множество селовых точек в матрице?
+		// Насколько я понял, если седловых точек в матрице несколько, то они все равны по значению.
+	cout << "Седловая точка: " << findSaddlePoint(matrix) << endl;
 }
 
-//Р—Р°РґР°РЅРёРµ1
-//! РљР°Рє РїРµСЂРµРґР°СЋС‚СЃСЏ Р°СЂРіСѓРјРµРЅС‚С‹ РІ C/C++? Р’ РґР°РЅРЅРѕРј СЃР»СѓС‡Р°Рµ РЅР°РґРѕ РїРµСЂРµРґР°РІР°С‚СЊ Р°СЂРіСѓРјРµРЅС‚ РїРѕ РєРѕРЅСЃС‚Р°РЅС‚РЅРѕР№ СЃСЃС‹Р»РєРµ
-string deleteSpaces(string text)
+//Задание1
+//! Как передаются аргументы в C/C++? В данном случае надо передавать аргумент по константной ссылке
+// По значению и по ссылке.
+string deleteSpaces(const string& text)
 {
-    //Р—Р°РјРµРЅР° РјРЅРѕР¶РµСЃС‚РІРµРЅРЅС‹С… РїСЂРѕР±РµР»РѕРІ РЅР° РµРґРёРЅРёС‡РЅС‹Р№
-//	! РџРѕС‡РµРјСѓ РІС‹Р±СЂР°РЅР° С‚Р°РєР°СЏ Р·Р°РїРёСЃСЊ СЂРµРіСѓР»СЏСЂРЅРѕРіРѕ РІС‹СЂР°Р¶РµРЅРёСЏ?
-    string newText=regex_replace(text,regex("[[:s:]]{2,}")," ");
-    //РћР±СЂРµР·Р°РµРј РЅР°С‡Р°Р»Рѕ Рё РєРѕРЅРµС†, РµСЃР»Рё РїСЂРёСЃСѓС‚СЃРІСѓСЋС‚ РїСЂРѕР±РµР»С‹
-    newText.erase(0, newText.find_first_not_of(" "));
-    newText.erase(newText.find_last_not_of(" ")+1);
-    return newText;
+	//Замена множественных пробелов на единичный
+//	! Почему выбрана такая запись регулярного выражения?
+	string newText = regex_replace(text, regex("[[:s:]]{2,}"), " ");
+	//Обрезаем начало и конец, если присутсвуют пробелы
+	newText.erase(0, newText.find_first_not_of(" "));
+	newText.erase(newText.find_last_not_of(" ") + 1);
+	return newText;
 }
 
-string addEllipsis(string text,int m)
+string addEllipsis(string text, size_t m)
 {
-    //Р’РѕР·РІСЂР°С‚ РїРѕРґСЃС‚СЂРѕРєРё РЅРµ Р±РѕР»РµРµ m СЃРёРјРІРѕР»РѕРІ
-//	! РњРѕР¶РµС‚ РІРѕР·РЅРёРєРЅСѓС‚СЊ РїРµСЂРµРїРѕР»РЅРµРЅРёРµ int. РќСѓР¶РЅРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ std::string::size_type
-//	! Р—Р°С‡РµРј РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ else, РµСЃР»Рё РІ Р±Р»РѕРєРµ, РєРѕС‚РѕСЂС‹Р№ РІС‹РїРѕР»РЅРёС‚СЃСЏ РїСЂРё РёСЃС‚РёРЅРЅРѕСЃС‚Рё СѓСЃР»РѕРІРёСЏ, РЅР°РїРёСЃР°РЅ return?
-//	! Р—Р°РїРёСЃР°С‚СЊ, РёСЃРїРѕР»СЊР·СѓСЏ С‚РµСЂРЅР°СЂРЅС‹Р№ РѕРїРµСЂР°С‚РѕСЂ
-    if (text.size() > m)
-        return text.substr(0,m) + "...";
-    else
-        return text;
+	//Возврат подстроки не более m символов
+//	! Может возникнуть переполнение int. Нужно использовать std::string::size_type
+//	! Зачем использовать else, если в блоке, который выполнится при истинности условия, написан return?
+//	! Записать, используя тернарный оператор
+	return text.size() > m ? text.substr(0, m) + "..." : text;
 }
 
-//Р—Р°РґР°РЅРёРµ 2
-//! РќР°Р·РІР°РЅРёРµ С„СѓРЅРєС†РёРё, РјСЏРіРєРѕ РіРѕРІРѕСЂСЏ, РЅРµ РѕС‡РµРЅСЊ РёРЅС„РѕСЂРјР°С‚РёРІРЅРѕРµ
-bool isRight(string text)
+//Задание 2
+//! Название функции, мягко говоря, не очень информативное
+bool isRightBracketSequence(const string& text)
 {
-    stack <char> brackets;
-    for (size_t i = 0; i < text.length(); i++)
-    {
-        if (text[i] == ')')
-        {
-            if (brackets.top() == '(')
-            {
-                brackets.pop();
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else if (text[i] == '(')
-        {
-            brackets.push('(');
-        }
-    }
-//    ! Р—Р°РїРёСЃР°С‚СЊ РїРѕ-С‡РµР»РѕРІРµС‡РµСЃРєРё
-    if (brackets.empty())
-        return true;
-    else
-        return false;
+	stack <char> brackets;
+	for (size_t i = 0; i < text.length(); i++)
+	{
+		if (text[i] == ')')
+		{
+			if (brackets.top() == '(')
+			{
+				brackets.pop();
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else if (text[i] == '(')
+		{
+			brackets.push('(');
+		}
+	}
+	//    ! Записать по-человечески
+	return brackets.empty() ? true : false;
 }
 
-// Р—Р°РґР°РЅРёРµ 3
+// Задание 3
 
-//Р’РѕР·РІСЂР°С‚ СЃРµРґР»РѕРІРѕР№ С‚РѕС‡РєРё
-int findSaddlePoint(vector<vector<int>> matrix)
+//Возврат седловой точки
+int findSaddlePoint(const vector<vector<int>> &matrix)
 {
-    int saddlePoint=0;
-    int minMax=minMaxElement(matrix);
-    int maxMin=maxMinElement(matrix);
-    if (minMax == maxMin)
-        return saddlePoint = minMax;
-    else
-        cout << "РЎРµРґР»РѕРІРѕР№ С‚РѕС‡РєРё РЅРµС‚." << endl;
-//    ! Р§С‚Рѕ С‚Р°РєРѕРµ NAN? РЈ РјРµРЅСЏ РєРѕРјРїРёР»СЏС‚РѕСЂ РЅРµ РїРѕРЅРёРјР°РµС‚ (gcc version 12.2.0)
-    return 0;
+	if (minMaxElement(matrix) == maxMinElement(matrix))
+		return minMaxElement(matrix);
+	else
+		cout << "Седловой точки нет." << endl;
+	//    ! Что такое NAN? У меня компилятор не понимает (gcc version 12.2.0)
+	return 0;
 }
 
-//РџРѕРёСЃРє РјРёРЅРёРјР°РєСЃР°
-int minMaxElement(vector<vector<int>>matrix)
+//Поиск минимакса
+int minMaxElement(const vector<vector<int>> &matrix)
 {
-    vector<int> results;
-//    ! Р—Р°С‡РµРј РІС‹СЃС‚Р°РІР»СЏС‚СЊ РїРµСЂРµРјРµРЅРЅСѓСЋ С‚Р°Рј, РіРґРµ РѕРЅР° РЅРµ РЅСѓР¶РЅР°?
-    int max;
-    for (size_t i = 0; i < matrix[0].size(); i++)
-    {
-        max = matrix[0][i];
-        for (size_t j = 0; j < matrix.size(); j++)
-        {
-//        	! Р”Р»СЏ РїРѕРёСЃРєР° РјР°РєСЃРёРјСѓРјР° РёР»Рё РјРёРЅРёРјСѓРјР° РµСЃС‚СЊ СЃС‚Р°РЅРґР°СЂС‚РЅС‹Рµ С„СѓРЅРєС†РёРё
-            if (matrix[j][i] > max)
-            {
-                max = matrix[j][i];
-            }
-        }
-        results.push_back(max);
-    }
-//    ! Р”Р»СЏ РїРѕРёСЃРєР° РјР°РєСЃРёРјСѓРјР° РёР»Рё РјРёРЅРёРјСѓРјР° РІ РјР°СЃСЃРёРІРµ РµСЃС‚СЊ СЃС‚Р°РЅРґР°СЂС‚РЅС‹Рµ С„СѓРЅРєС†РёРё
-    int minMax = results[0];
-    for (size_t i = 0; i < results.size(); i++)
-    {
-        if (results[i] < minMax)
-        {
-            minMax = results[i];
-        }
-    }
-    return minMax;
+	vector<int> results;
+	//    ! Зачем выставлять переменную там, где она не нужна?
+	for (size_t i = 0; i < matrix.size(); i++)
+	{
+		//        	! Для поиска максимума или минимума есть стандартные функции        
+		results.push_back(*max_element(matrix[i].begin(), matrix[i].end()));
+	}
+	//    ! Для поиска максимума или минимума в массиве есть стандартные функции
+	return *min_element(results.begin(), results.end());
 }
 
-//РџРѕРёСЃРє РјР°РєСЃРёРјРёРЅР°
-int maxMinElement(vector<vector<int>>matrix)
+//Поиск максимина
+int maxMinElement(const vector<vector<int>> &matrix)
 {
-    vector<int> results;
-    int min;
-    for (size_t i = 0; i < matrix.size(); i++)
-    {
-        min = matrix[i][0];
-        for (size_t j = 0; j < matrix[0].size(); j++)
-        {
-            if (matrix[i][j] <min)
-            {
-                min = matrix[i][j];
-            }
-        }
-        results.push_back(min);
-    }
-    int maxMin = results[0];
-    for (size_t i = 0; i < results.size(); i++)
-    {
-        if (results[i] > maxMin)
-        {
-            maxMin = results[i];
-        }
-    }
-    return maxMin;
+	vector<int> results;
+	int min;
+	for (size_t i = 0; i < matrix.size(); i++)
+	{
+		min = matrix[i][0];
+		for (size_t j = 0; j < matrix[0].size(); j++)
+		{
+			if (matrix[i][j] < min)
+			{
+				min = matrix[i][j];
+			}
+		}
+		results.push_back(min);
+	}
+	int maxMin = results[0];
+	for (size_t i = 0; i < results.size(); i++)
+	{
+		if (results[i] > maxMin)
+		{
+			maxMin = results[i];
+		}
+	}
+	return maxMin;
 }
 
 void separator(int taskNum)
 {
-    cout << endl << endl;
-//    ! РљР°Рє-С‚Рѕ РЅР°РґРѕ Р±С‹ Р±РµР· РґСѓР±Р»РёСЂРѕРІР°РЅРёСЏ РєРѕРґР°
-    for (size_t i = 0; i < 20; i++)
-    {
-        cout << "*";
-    }
-    cout << endl<<"*";
-    for (size_t i = 0; i < 5; i++)
-    {
-        cout << " ";
-    }
-    cout << "Р—Р°РґР°РЅРёРµ " + to_string(taskNum);
-    for (size_t i = 0; i < 4; i++)
-    {
-        cout << " ";
-    }
-    cout << "*"<<endl;
-    for (size_t i = 0; i < 20; i++)
-    {
-        cout << "*";
-    }
-    cout << endl;
+	cout << endl << endl;
+	//    ! Как-то надо бы без дублирования кода
+	cout << "*****************" << endl;
+	cout << "*               *" << endl;
+	cout << "*   Задание "<< taskNum<<"   *" << endl;
+	cout << "*               *" << endl;
+	cout << "*****************" << endl;
+	cout << endl;
 }
