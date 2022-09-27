@@ -9,12 +9,14 @@ using namespace std;
 
 string deleteSpaces(const string&);
 //! А здесь не надо по ссылке передавать? Касается и функции maxMinElement()
-string addEllipsis(string, size_t);
+//! Про эту функцию забыл
+string addEllipsis(const string&, const size_t&);
 bool isRightBracketSequence(const string&);
 int findSaddlePoint(const vector<vector<int>>&);
 int minMaxElement(const vector<vector<int>>&);
 int maxMinElement(const vector<vector<int>>&);
 void separator(int);
+//g
 
 int main()
 {
@@ -56,7 +58,7 @@ string deleteSpaces(const string& text)
 	return newText;
 }
 
-string addEllipsis(string text, size_t m)
+string addEllipsis(const string& text, const size_t& m)
 {
 	//Возврат подстроки не более m символов
 //	! Может возникнуть переполнение int. Нужно использовать std::string::size_type
@@ -95,18 +97,18 @@ bool isRightBracketSequence(const string& text)
 // Задание 3
 
 //Возврат седловой точки
-int findSaddlePoint(const vector<vector<int>> &matrix)
+int findSaddlePoint(const vector<vector<int>>& matrix)
 {
+	if(!matrix.empty())
 	if (minMaxElement(matrix) == maxMinElement(matrix))
 		return minMaxElement(matrix);
-	else
-		cout << "Седловой точки нет." << endl;
+	cout << "Седловой точки нет." << endl;
 	//    ! Что такое NAN? У меня компилятор не понимает (gcc version 12.2.0)
 	return 0;
 }
 
 //Поиск минимакса
-int minMaxElement(const vector<vector<int>> &matrix)
+int minMaxElement(const vector<vector<int>>& matrix)
 {
 	vector<int> results;
 	//    ! Зачем выставлять переменную там, где она не нужна?
@@ -114,6 +116,7 @@ int minMaxElement(const vector<vector<int>> &matrix)
 	{
 		//        	! Для поиска максимума или минимума есть стандартные функции        
 //		! Просто так разыменовывать указатель опасно. Что если придет пустой массив?
+		// В голову приходит только try catch или проверка массива на пустоту перед вызовом функций.
 		results.push_back(*max_element(matrix[i].begin(), matrix[i].end()));
 	}
 	//    ! Для поиска максимума или минимума в массиве есть стандартные функции
@@ -121,7 +124,7 @@ int minMaxElement(const vector<vector<int>> &matrix)
 }
 
 //Поиск максимина
-int maxMinElement(const vector<vector<int>> &matrix)
+int maxMinElement(const vector<vector<int>>& matrix)
 {
 	vector<int> results;
 	int min;
@@ -154,7 +157,7 @@ void separator(int taskNum)
 	//    ! Как-то надо бы без дублирования кода
 	cout << "*****************" << endl;
 	cout << "*               *" << endl;
-	cout << "*   Задание "<< taskNum<<"   *" << endl;
+	cout << "*   Задание " << taskNum << "   *" << endl;
 	cout << "*               *" << endl;
 	cout << "*****************" << endl;
 	cout << endl;
