@@ -8,6 +8,7 @@
 using namespace std;
 
 string deleteSpaces(const string&);
+//! А здесь не надо по ссылке передавать? Касается и функции maxMinElement()
 string addEllipsis(string, size_t);
 bool isRightBracketSequence(const string&);
 int findSaddlePoint(const vector<vector<int>>&);
@@ -22,6 +23,7 @@ int main()
 	string text;
 	//    ! Будет ли в данном случае копироваться строка в функцию deleteSpaces()? В каком случае будет копироваться?
 		// Строка будет скопирована, потому что передается значение. Если передать по ссылке, строка не будет копироваться.
+//	! Не совсем так. Скорее всего компилятор оптимизирует этот случай и память будет выделятся ровно один раз. Надо прочитать про RVO, NRVO, Copy elision
 	text = deleteSpaces("  Lorem   ipsum  dolor      sit  amet,    consectetuer adipiscing elit.       Maecenas porttitor congue   massa. Fusce posuere, magna sed  pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis     urna.   ");
 	cout << addEllipsis(text, 40) << endl;
 
@@ -35,12 +37,14 @@ int main()
 								{-2,4,-9,5} };
 	//    ! А если множество будет множество селовых точек в матрице?
 		// Насколько я понял, если седловых точек в матрице несколько, то они все равны по значению.
+//	! Ну да. В задаче речи о выводе местоположения элементов не шло
 	cout << "Седловая точка: " << findSaddlePoint(matrix) << endl;
 }
 
 //Задание1
 //! Как передаются аргументы в C/C++? В данном случае надо передавать аргумент по константной ссылке
 // По значению и по ссылке.
+//! Еще по указателю можно передать аргумент функции. Это пришло из C
 string deleteSpaces(const string& text)
 {
 	//Замена множественных пробелов на единичный
@@ -109,6 +113,7 @@ int minMaxElement(const vector<vector<int>> &matrix)
 	for (size_t i = 0; i < matrix.size(); i++)
 	{
 		//        	! Для поиска максимума или минимума есть стандартные функции        
+//		! Просто так разыменовывать указатель опасно. Что если придет пустой массив?
 		results.push_back(*max_element(matrix[i].begin(), matrix[i].end()));
 	}
 	//    ! Для поиска максимума или минимума в массиве есть стандартные функции
